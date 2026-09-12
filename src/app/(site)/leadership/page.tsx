@@ -3,12 +3,15 @@ import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import PersonCard from "@/components/PersonCard";
 import CTASection from "@/components/CTASection";
-import { leadership, type LeadershipPerson } from "@/lib/content";
+import { getLeadership } from "@/lib/data";
+import type { LeadershipPerson } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Leadership",
   description: "Meet the students leading Dallas Entrepreneurial Alliance.",
 };
+
+export const revalidate = 60;
 
 const categories: LeadershipPerson["category"][] = [
   "Executive Leadership",
@@ -16,7 +19,9 @@ const categories: LeadershipPerson["category"][] = [
   "Advisors & Alumni",
 ];
 
-export default function LeadershipPage() {
+export default async function LeadershipPage() {
+  const leadership = await getLeadership();
+
   return (
     <>
       <section className="bg-navy-950 py-20">
@@ -45,6 +50,7 @@ export default function LeadershipPage() {
                     meta={p.school}
                     bio={p.bio}
                     linkedin={p.linkedin}
+                    photo={p.photo}
                   />
                 </Reveal>
               ))}

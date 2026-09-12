@@ -3,10 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, MapPin, ArrowLeft } from "lucide-react";
 import SkylineMark from "@/components/SkylineMark";
-import { events } from "@/lib/content";
+import { getEvents } from "@/lib/data";
 
-export function generateStaticParams() {
-  return events.map((e) => ({ slug: e.slug }));
+export const revalidate = 60;
+
+async function findEvent(slug: string) {
+  const events = await getEvents();
+  return events.find((e) => e.slug === slug);
 }
 
 export async function generateMetadata({
@@ -15,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const event = events.find((e) => e.slug === slug);
+  const event = await findEvent(slug);
   if (!event) return {};
   return { title: event.name, description: event.description };
 }
@@ -35,7 +38,7 @@ export default async function EventDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const event = events.find((e) => e.slug === slug);
+  const event = await findEvent(slug);
   if (!event) notFound();
 
   return (

@@ -8,17 +8,20 @@ import PillarCard from "@/components/PillarCard";
 import EventCard from "@/components/EventCard";
 import PersonCard from "@/components/PersonCard";
 import CTASection from "@/components/CTASection";
-import {
-  stats,
-  pillars,
-  events,
-  leadership,
-  whyDea,
-} from "@/lib/content";
+import { pillars, whyDea } from "@/lib/content";
+import { getEvents, getLeadership, getSiteSettings } from "@/lib/data";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const [settings, events, leadership] = await Promise.all([
+    getSiteSettings(),
+    getEvents(),
+    getLeadership(),
+  ]);
   const upcoming = events.filter((e) => e.status === "upcoming").slice(0, 3);
   const featuredLeaders = leadership.slice(0, 4);
+  const stats = settings.stats ?? [];
 
   return (
     <>
@@ -44,8 +47,7 @@ export default function Home() {
             className="animate-fade-up mt-7 max-w-xl text-lg leading-relaxed text-silver-400"
             style={{ animationDelay: "160ms" }}
           >
-            Dallas Entrepreneurial Alliance brings together ambitious students to explore
-            entrepreneurship, economics, leadership, innovation, and the ideas shaping the future.
+            {settings.heroSubtext}
           </p>
           <div
             className="animate-fade-up mt-10 flex flex-col gap-4 sm:flex-row"
@@ -73,8 +75,8 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
-              {stats.map((s) => (
-                <StatCard key={s.id} label={s.label} value={s.value} />
+              {stats.map((s, i) => (
+                <StatCard key={`${s.label}-${i}`} label={s.label} value={s.value} />
               ))}
             </div>
           </Reveal>
@@ -87,14 +89,10 @@ export default function Home() {
           <Reveal>
             <SectionHeading
               eyebrow="About DEA"
-              title="A Student-Led Network for Ambition, Ideas, and Opportunity."
+              title={settings.aboutHeadline ?? "A Student-Led Network for Ambition, Ideas, and Opportunity."}
             />
             <p className="mt-6 max-w-lg text-base leading-relaxed text-navy-700/80">
-              DEA is a youth-led organization connecting ambitious students across Dallas-area
-              schools around one shared idea: that the next generation of business and civic
-              leaders should start building those skills now, not after graduation. We bring
-              together economics, entrepreneurship, leadership, and financial literacy into one
-              cross-school community.
+              {settings.aboutBody}
             </p>
             <Link
               href="/about"

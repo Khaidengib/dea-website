@@ -161,6 +161,7 @@ export type Member = {
   interest: string;
   bio: string;
   linkedin?: string;
+  photo?: string;
 };
 
 export const members: Member[] = [
@@ -176,6 +177,7 @@ export type LeadershipPerson = {
   school?: string;
   bio: string;
   linkedin?: string;
+  photo?: string;
 };
 
 export const leadership: LeadershipPerson[] = [
@@ -195,6 +197,7 @@ export type Event = {
   description: string;
   status: "upcoming" | "past";
   registrationUrl?: string;
+  image?: string;
 };
 
 export const events: Event[] = [
@@ -243,6 +246,7 @@ export type Initiative = {
   goals: string[];
   participants: string;
   status: "Active" | "Launching Soon" | "Pilot";
+  image?: string;
 };
 
 export const initiatives: Initiative[] = [
@@ -286,7 +290,8 @@ export type Post = {
   date: string;
   category: "Economics" | "Entrepreneurship" | "Leadership" | "Research" | "Events" | "Organization";
   excerpt: string;
-  body: string[];
+  body: string[] | Record<string, unknown>[];
+  featuredImage?: string;
 };
 
 export const posts: Post[] = [

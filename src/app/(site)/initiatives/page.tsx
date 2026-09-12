@@ -3,14 +3,18 @@ import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import InitiativeCard from "@/components/InitiativeCard";
 import CTASection from "@/components/CTASection";
-import { initiatives } from "@/lib/content";
+import { getInitiatives } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Initiatives",
   description: "DEA's major student-led programs and initiatives.",
 };
 
-export default function InitiativesPage() {
+export const revalidate = 60;
+
+export default async function InitiativesPage() {
+  const initiatives = await getInitiatives();
+
   return (
     <>
       <section className="bg-navy-950 py-20">

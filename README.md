@@ -76,25 +76,41 @@ Functions**) but aren't emailed anywhere yet. The fastest way to fix that:
    submissions to your inbox. (Ask Claude to wire this up — it's a small,
    quick change once you have the API key.)
 
-## Adding a visual CMS (optional, no-code editing)
+## Connecting the Sanity CMS
 
-This build keeps content in a single, easy-to-edit file rather than a full
-CMS, since a true CMS (with its own login, media library, and visual editor)
-is a separate service that needs its own account. The recommended path is
-[Sanity](https://sanity.io) (generous free tier, real drag-and-drop Studio):
+This site now ships with a full CMS built in: Members, Leadership, Events,
+Initiatives, DEA Insights posts, and homepage settings (hero text, stats,
+mission/vision) are all editable at **`dallasea.com/studio`** — no code, no
+GitHub, no redeploy. Edits show up on the live site within about a minute.
 
-1. Create a free Sanity account and project at sanity.io.
-2. Ask Claude to scaffold `sanity/schemas` for members, leadership, events,
-   initiatives, and posts, and swap `src/lib/content.ts` for live GROQ
-   queries against your Sanity dataset.
-3. Add `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` as
-   Vercel environment variables.
+If you're reading this before it's connected, add these two environment
+variables in Vercel (**Settings → Environment Variables**), then redeploy:
 
-Once connected, you'd log into `dallasea.com/studio` (or a separate Sanity
-URL) and edit everything — text, images, members, events — without touching
-code, exactly as the original spec described.
+| Key | Value |
+| --- | --- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | your Sanity project ID |
+| `NEXT_PUBLIC_SANITY_DATASET` | `production` |
 
-## Local development
+Once set, visit `dallasea.com/studio`, log in with the same account you used
+to create the Sanity project, and you'll see:
+
+- **Site Settings** — hero headline/subtext, homepage statistics, mission
+  and vision statements
+- **Member** — the member directory
+- **Leadership** — executive leadership, directors, advisors & alumni
+- **Event** — upcoming and past events
+- **Initiative** — DEA's programs
+- **DEA Insights Post** — blog articles, with rich text and images
+
+Until Sanity is connected (or if a query ever fails), every page quietly
+falls back to the fixtures in `src/lib/content.ts`, so the site is never
+broken — it just isn't live-editable yet.
+
+**Who can edit:** anyone you invite as a member on your Sanity project (via
+sanity.io/manage → your project → Members) can log into `/studio`. There's
+no separate password system to manage — it rides on Sanity's own login.
+
+
 
 ```bash
 npm install

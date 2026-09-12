@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 function LinkedinIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -25,19 +27,31 @@ export default function PersonCard({
   meta,
   bio,
   linkedin,
+  photo,
 }: {
   name: string;
   position: string;
   meta?: string;
   bio: string;
   linkedin?: string;
+  photo?: string;
 }) {
   return (
     <div className="card-lift flex flex-col rounded-md border border-silver-300/60 bg-white p-6">
       <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-navy-800 to-navy-950 font-display text-lg font-semibold text-silver-200">
-          {initials(name)}
-        </div>
+        {photo ? (
+          <Image
+            src={photo}
+            alt={name}
+            width={56}
+            height={56}
+            className="h-14 w-14 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-navy-800 to-navy-950 font-display text-lg font-semibold text-silver-200">
+            {initials(name)}
+          </div>
+        )}
         <div>
           <h3 className="font-display text-base font-semibold text-navy-950">{name}</h3>
           <p className="text-sm text-navy-700/80">{position}</p>
