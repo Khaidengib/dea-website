@@ -83,13 +83,66 @@ Initiatives, DEA Insights posts, and homepage settings (hero text, stats,
 mission/vision) are all editable at **`dallasea.com/studio`** — no code, no
 GitHub, no redeploy. Edits show up on the live site within about a minute.
 
-If you're reading this before it's connected, add these two environment
+If you're reading this before it's connected, add these environment
 variables in Vercel (**Settings → Environment Variables**), then redeploy:
 
 | Key | Value |
 | --- | --- |
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | your Sanity project ID |
 | `NEXT_PUBLIC_SANITY_DATASET` | `production` |
+| `SANITY_API_READ_TOKEN` | see below — optional, but needed for the click-to-edit Presentation view |
+
+### Getting the API read token (for the visual, click-to-edit editor)
+
+The Studio's document editor (add/edit/delete members, events, etc.) works
+with just the two `NEXT_PUBLIC_...` variables above. The **Presentation**
+tool — which shows your actual live site inside the editor and lets you
+click any text or image on the page to jump straight to editing it — needs
+one more thing: a read token, so it can show your unpublished edits before
+you hit Publish.
+
+1. Go to [sanity.io/manage](https://sanity.io/manage) → your project →
+   **API → Tokens**.
+2. Click **Add API token**. Name it "Website Preview". Set permissions to
+   **Viewer**.
+3. Copy the token (shown once) and add it in Vercel as `SANITY_API_READ_TOKEN`
+   — do **not** prefix it with `NEXT_PUBLIC_`, since it must stay server-side
+   only.
+4. Redeploy.
+
+Without this token, everything still works — you just edit documents in the
+regular list view instead of clicking around the live page.
+
+### Also required: allow your domain in Sanity's CORS settings
+
+Since the Studio is embedded in your own site rather than hosted separately
+by Sanity, you need to explicitly allow your domain:
+
+1. [sanity.io/manage](https://sanity.io/manage) → your project → **API →
+   CORS Origins → Add CORS origin**.
+2. Add `https://dallasea.com`, check **Allow credentials**, save.
+3. Repeat for your `*.vercel.app` URL if you use it.
+
+### Using the click-to-edit editor
+
+Once the token and CORS origin are set:
+
+1. Go to `dallasea.com/studio` and open **Presentation** in the left sidebar
+   (alongside "DEA Content" and "Vision").
+2. Your actual site loads in an iframe on the right. Click any piece of text
+   or image — a small pencil icon appears — click it to open that field for
+   editing in the panel on the left.
+3. Edits save as drafts. Click **Publish** in the left panel to make them go
+   live on the real site (usually within about a minute, sometimes needing a
+   refresh).
+
+### Adding photos
+
+In either the regular document list or inside Presentation, open any Member,
+Leader, Event, Initiative, or Post document — each has a Photo/Image field.
+Click it, then either drag a file in or click to browse your computer. Once
+uploaded, Sanity handles resizing and hosting automatically; nothing else to
+configure.
 
 Once set, visit `dallasea.com/studio`, log in with the same account you used
 to create the Sanity project, and you'll see:

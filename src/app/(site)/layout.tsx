@@ -1,7 +1,11 @@
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const { isEnabled: isDraftMode } = await draftMode();
+
   return (
     <>
       <a
@@ -13,6 +17,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Navbar />
       <main id="main-content">{children}</main>
       <Footer />
+      {isDraftMode && <VisualEditing />}
     </>
   );
 }

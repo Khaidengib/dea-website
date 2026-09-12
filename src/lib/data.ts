@@ -1,4 +1,5 @@
-import { client } from "@/sanity/client";
+import { draftMode } from "next/headers";
+import { client, previewClient } from "@/sanity/client";
 import { sanityConfigured } from "@/sanity/env";
 import {
   membersQuery,
@@ -40,7 +41,11 @@ type SiteSettings = {
 async function safeFetch<T>(query: string, fallback: T): Promise<T> {
   if (!sanityConfigured) return fallback;
   try {
-    const result = await client.fetch<T>(query, {}, { next: { revalidate: REVALIDATE_SECONDS } });
+    const { isEnabled } = await draftMode();
+    const activeClient = isEnabled ? previewClient : client;
+    const result = isEnabled
+      ? await activeClient.fetch<T>(query, {}, { cache: "no-store" })
+      : await activeClient.fetch<T>(query, {}, { next: { revalidate: REVALIDATE_SECONDS } });
     if (Array.isArray(result) && result.length === 0) return fallback;
     if (!result) return fallback;
     return result;
